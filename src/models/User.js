@@ -15,14 +15,13 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function () {
   const user = this;
-  if (!user.isModified("password")) return next();
+  if (!user.isModified("password")) return;
 
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(user.password, salt);
   user.password = hash;
-  next();
 });
 
 UserSchema.methods.comparePassword = function (candidatePassword) {
